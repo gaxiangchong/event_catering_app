@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block body_class %}page-order-report{% endblock %}
+
 {% block content %}
 <div class="admin-dashboard">
     <div class="back-nav">
@@ -40,6 +42,7 @@
                     <th>Payment</th>
                     <th>Status</th>
                     <th>Date</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,10 +66,19 @@
                         <span class="badge {{ order.status.value }}">{{ order.status.value|upper }}</span>
                     </td>
                     <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        {% if order.status.value == 'pending' or order.status.value == 'processing' %}
+                        <form action="{{ url_for('admin.update_order_status', order_id=order.id) }}?event_id={{ current_filter or '' }}" method="post" style="display: inline;">
+                            <button type="submit" name="status" value="paid" class="btn-status-paid" title="Mark as paid">Mark paid</button>
+                        </form>
+                        {% else %}
+                        —
+                        {% endif %}
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="8" style="text-align:center;">No orders found.</td>
+                    <td colspan="10" style="text-align:center;">No orders found.</td>
                 </tr>
                 {% endfor %}
             </tbody>

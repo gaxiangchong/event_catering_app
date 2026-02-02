@@ -14,9 +14,15 @@ def list_events():
 def get_event(event_id):
     event = Event.query.get_or_404(event_id)
     if event.status == EventStatus.CANCELLED:
-        # Optionally show but mark as cancelled, or generic 404? 
-        # Requirement says "Cancelled events hidden or labeled". 
-        # We'll show them but disable booking if accessed directly.
+        # Optionally show but mark as cancelled, or generic 404?
+        # Requirement says "Cancelled events hidden or labeled".
         pass
-        
-    return render_template('events/detail.html', event=event)
+    meal_menu_descriptions = [
+        {"id": m.id, "description": m.description or ""}
+        for m in event.meal_options
+    ]
+    return render_template(
+        'events/detail.html',
+        event=event,
+        meal_menu_descriptions=meal_menu_descriptions,
+    )

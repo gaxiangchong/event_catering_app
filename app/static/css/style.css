@@ -119,6 +119,52 @@ h2 {
     margin-bottom: 1.5rem;
 }
 
+.form-section-heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 0.5rem 0;
+}
+
+.form-hint {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+}
+
+.meal-options-admin .meal-option-fields {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.meal-options-admin .meal-option-block {
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+}
+
+.meal-options-admin .meal-option-block label {
+    margin-top: 1rem;
+    margin-bottom: 0.35rem;
+}
+
+.meal-options-admin .meal-option-block label:first-child {
+    margin-top: 0;
+}
+
+.meal-options-admin .meal-option-block textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    min-height: 80px;
+    box-sizing: border-box;
+}
+
 label {
     display: block;
     margin-bottom: 0.5rem;
@@ -417,6 +463,48 @@ select:focus {
     background: rgba(99, 102, 241, 0.05);
 }
 
+.meal-options-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 0.75rem 0;
+}
+
+.meal-description-box-wrapper {
+    margin-top: 1.25rem;
+}
+
+.meal-description-label {
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.meal-description-textbox {
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    line-height: 1.6;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--text);
+    resize: vertical;
+    min-height: 100px;
+}
+
+.meal-description-textbox:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.meal-description-textbox::placeholder {
+    color: var(--text-muted);
+}
+
 /* --- Admin Tables --- */
 .admin-dashboard .header-actions {
     display: flex;
@@ -538,6 +626,11 @@ select:focus {
     .container {
         max-width: 800px;
         padding-bottom: 2rem;
+    }
+
+    /* Order report: ~20% wider so more table content is visible */
+    body.page-order-report .container {
+        max-width: 960px;
     }
 
     .sticky-cta {
@@ -1144,6 +1237,22 @@ select:focus {
 
 .btn-danger:hover {
     background: #fecaca;
+}
+
+.btn-status-paid {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    background: #059669;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-status-paid:hover {
+    background: #047857;
 }
 
 /* --- Lightbox Modal --- */

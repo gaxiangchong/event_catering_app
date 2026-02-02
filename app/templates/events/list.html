@@ -3,7 +3,7 @@
 {% block content %}
 <div class="events-wrapper">
     <div class="hero-section">
-        <h1>Upcoming Events</h1>
+        <h2>Event Meal Companion</h2>
         <p>Discover and book your next catering experience.</p>
     </div>
 
@@ -16,7 +16,6 @@
                     <p class="date">{{ event.date.strftime('%B %d, %Y • %I:%M %p') }}</p>
                     <p class="location">{{ event.location }}</p>
                     <div class="footer">
-                        <span class="fee">RM{{ "%.2f"|format(event.fee) }}</span>
                         <span class="btn-text">Select &rarr;</span>
                     </div>
                 </div>

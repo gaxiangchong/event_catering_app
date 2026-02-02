@@ -35,7 +35,7 @@
 
         <div class="form-row">
             <div class="form-group half">
-                <label for="fee">Event Fee (RM)</label>
+                <label for="fee">Meal Fee (RM)</label>
                 <input type="number" step="0.01" id="fee" name="fee" value="{{ event.fee if event else '' }}" required>
             </div>
             <div class="form-group half">
@@ -48,6 +48,26 @@
         <div class="form-group">
             <label for="capacity">Capacity (Optional)</label>
             <input type="number" id="capacity" name="capacity" value="{{ event.capacity if event else '' }}">
+        </div>
+
+        <div class="form-group meal-options-admin">
+            <h4 class="form-section-heading">Meal options</h4>
+            <p class="form-hint">Set the two standard options: Standard and Vegetarian. Add a description so guests know what dishes are included.</p>
+            {% set meals = event.meal_options|sort(attribute='id') if event else [] %}
+            <div class="meal-option-fields">
+                <div class="meal-option-block">
+                    <label for="meal_0_name">Standard meal – name</label>
+                    <input type="text" id="meal_0_name" name="meal_0_name" value="{{ meals[0].name if meals|length > 0 else 'Standard' }}" placeholder="Standard">
+                    <label for="meal_0_description">Standard meal – description (dishes included)</label>
+                    <textarea id="meal_0_description" name="meal_0_description" rows="4" placeholder="e.g. Grilled chicken, rice, vegetables...">{{ meals[0].description if meals|length > 0 and meals[0].description else '' }}</textarea>
+                </div>
+                <div class="meal-option-block">
+                    <label for="meal_1_name">Vegetarian meal – name</label>
+                    <input type="text" id="meal_1_name" name="meal_1_name" value="{{ meals[1].name if meals|length > 1 else 'Vegetarian' }}" placeholder="Vegetarian">
+                    <label for="meal_1_description">Vegetarian meal – description (dishes included)</label>
+                    <textarea id="meal_1_description" name="meal_1_description" rows="4" placeholder="e.g. Mixed vegetables, tofu, rice...">{{ meals[1].description if meals|length > 1 and meals[1].description else '' }}</textarea>
+                </div>
+            </div>
         </div>
 
         <button type="submit" class="btn-primary">Save Event</button>

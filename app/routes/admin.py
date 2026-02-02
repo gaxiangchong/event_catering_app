@@ -76,12 +76,15 @@ def new_event():
                 status=EventStatus.ACTIVE
             )
             db.session.add(event)
-            db.session.flush() # Get ID
+            db.session.flush()  # Get ID
 
-            # Add default meal options
-            default_meals = ['Standard Non-Veg', 'Vegetarian Set', 'Halal Set']
-            for m in default_meals:
-                meal = MealOption(event_id=event.id, name=m)
+            # Add two standard meal options: Standard and Vegetarian
+            meal_0_name = request.form.get('meal_0_name') or 'Standard'
+            meal_0_desc = request.form.get('meal_0_description') or ''
+            meal_1_name = request.form.get('meal_1_name') or 'Vegetarian'
+            meal_1_desc = request.form.get('meal_1_description') or ''
+            for name, desc in [(meal_0_name, meal_0_desc), (meal_1_name, meal_1_desc)]:
+                meal = MealOption(event_id=event.id, name=name, description=desc or None)
                 db.session.add(meal)
 
             db.session.commit()
@@ -105,9 +108,22 @@ def edit_event(event_id):
         event.fee = float(request.form.get('fee'))
         event.admin_fee = float(request.form.get('admin_fee', '1.0'))
         event.capacity = int(request.form.get('capacity')) if request.form.get('capacity') else None
-        
+
+        meal_0_name = request.form.get('meal_0_name') or 'Standard'
+        meal_0_desc = request.form.get('meal_0_description') or ''
+        meal_1_name = request.form.get('meal_1_name') or 'Vegetarian'
+        meal_1_desc = request.form.get('meal_1_description') or ''
+
         try:
             event.date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
+            # Ensure exactly two meal options; create or update
+            meals = sorted(event.meal_options, key=lambda m: m.id)
+            for i, (name, desc) in enumerate([(meal_0_name, meal_0_desc), (meal_1_name, meal_1_desc)]):
+                if i < len(meals):
+                    meals[i].name = name
+                    meals[i].description = desc or None
+                else:
+                    db.session.add(MealOption(event_id=event.id, name=name, description=desc or None))
             db.session.commit()
             flash('Event updated successfully!')
             return redirect(url_for('admin.dashboard'))
@@ -138,6 +154,26 @@ def list_orders():
     events = Event.query.order_by(Event.date.desc()).all()
     
     return render_template('admin/orders.html', orders=orders, events=events, current_filter=event_id)
+
+
+@bp.route('/orders/<int:order_id>/status', methods=['POST'])
+@admin_required
+def update_order_status(order_id):
+    """Admin can mark an order as paid (from pending or processing)."""
+    order = Order.query.get_or_404(order_id)
+    new_status = request.form.get('status')
+    if new_status != 'paid':
+        flash('Invalid status.', 'error')
+        return redirect(url_for('admin.list_orders', event_id=request.args.get('event_id')))
+    if order.status not in (OrderStatus.PENDING, OrderStatus.PROCESSING):
+        flash(f'Order #{order.id} cannot be changed to paid (current: {order.status.value}).', 'error')
+        return redirect(url_for('admin.list_orders', event_id=request.args.get('event_id')))
+    order.status = OrderStatus.PAID
+    if not order.payment_reference:
+        order.payment_reference = f"ADMIN-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    db.session.commit()
+    flash(f'Order #{order.id} marked as paid. Customer will see it in My Orders.', 'success')
+    return redirect(url_for('admin.list_orders', event_id=request.args.get('event_id')))
 
 @bp.route('/orders/export')
 @admin_required

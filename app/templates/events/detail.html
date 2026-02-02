@@ -27,7 +27,7 @@
             <span>{{ event.location }}</span>
         </div>
         <div class="meta-item">
-            <strong>Fee</strong>
+            <strong>Meal fee</strong>
             <span class="price">RM{{ "%.2f"|format(event.fee) }}</span>
         </div>
     </div>
@@ -46,6 +46,7 @@
             <input type="hidden" name="event_id" value="{{ event.id }}">
 
             <div class="meal-options">
+                <h4 class="meal-options-heading">Choose your meal</h4>
                 {% for meal in event.meal_options %}
                 <label class="meal-option-card">
                     <input type="radio" name="meal_id" value="{{ meal.id }}" required>
@@ -56,6 +57,30 @@
                 {% else %}
                 <p>No meal options available. Please contact support.</p>
                 {% endfor %}
+                <div class="meal-description-box-wrapper">
+                    <label for="menu-description-text" class="meal-description-label">Dishes included</label>
+                    <textarea id="menu-description-text" class="meal-description-textbox" readonly rows="5" placeholder="Select a meal above to see the dishes included."></textarea>
+                </div>
+                <script>
+                (function() {
+                    var mealList = {{ meal_menu_descriptions|tojson }};
+                    var mealDescriptions = {};
+                    mealList.forEach(function(m) { mealDescriptions[String(m.id)] = m.description; });
+                    var textEl = document.getElementById('menu-description-text');
+                    var radios = document.querySelectorAll('input[name="meal_id"]');
+                    function updateDescription() {
+                        var id = null;
+                        for (var i = 0; i < radios.length; i++) {
+                            if (radios[i].checked) { id = radios[i].value; break; }
+                        }
+                        var desc = id ? (mealDescriptions[id] || '') : '';
+                        textEl.value = desc;
+                        textEl.placeholder = desc ? '' : 'Select a meal above to see the dishes included.';
+                    }
+                    radios.forEach(function(r) { r.addEventListener('change', updateDescription); });
+                    updateDescription();
+                })();
+                </script>
             </div>
 
             {% if current_user.is_authenticated %}
