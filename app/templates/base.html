@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Catering App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">CateringApp</div>
+        <div class="nav-links">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('events.list_events') }}" class="nav-icon-link" data-tooltip="Events">
+                <span class="material-symbols-rounded">event</span>
+            </a>
+            <a href="{{ url_for('orders.list_orders') }}" class="nav-icon-link" data-tooltip="My Orders">
+                <span class="material-symbols-rounded">receipt_long</span>
+            </a>
+            <a href="{{ url_for('auth.profile') }}" class="nav-icon-link" data-tooltip="Profile">
+                <span class="material-symbols-rounded">person</span>
+            </a>
+            {% if current_user.is_admin %}
+            <a href="{{ url_for('admin.dashboard') }}" class="nav-icon-link" data-tooltip="Admin Dashboard">
+                <span class="material-symbols-rounded">dashboard</span>
+            </a>
+            {% endif %}
+            <a href="{{ url_for('auth.logout') }}" class="nav-icon-link" data-tooltip="Logout">
+                <span class="material-symbols-rounded">logout</span>
+            </a>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" class="nav-icon-link" data-tooltip="Login">
+                <span class="material-symbols-rounded">login</span>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flashes">
+            {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Mobile Sticky Footer (optional block) -->
+    {% block sticky_footer %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="event-detail-wrapper">
+    <div class="back-link">
+        <a href="{{ url_for('events.list_events') }}">&larr; Back to Events</a>
+    </div>
+
+    <div class="event-header">
+        <h1>{{ event.title }}</h1>
+        {% if event.status.value == 'cancelled' %}
+        <span class="badge cancelled">CANCELLED</span>
+        {% endif %}
+    </div>
+
+    <div class="event-meta">
+        <div class="meta-item">
+            <strong>Date</strong>
+            <span>{{ event.date.strftime('%A, %B %d, %Y') }}</span>
+        </div>
+        <div class="meta-item">
+            <strong>Time</strong>
+            <span>{{ event.date.strftime('%I:%M %p') }}</span>
+        </div>
+        <div class="meta-item">
+            <strong>Location</strong>
+            <span>{{ event.location }}</span>
+        </div>
+        <div class="meta-item">
+            <strong>Fee</strong>
+            <span class="price">RM{{ "%.2f"|format(event.fee) }}</span>
+        </div>
+    </div>
+
+    <div class="event-description">
+        <h3>About this Event</h3>
+        <p>{{ event.description }}</p>
+    </div>
+
+    <!-- Booking Section -->
+    <div class="booking-section">
+        {% if event.status.value == 'active' %}
+        <form action="{{ url_for('payment.checkout') }}" method="get">
+            <h3>Select Your Meal</h3>
+            <!-- Passing event_id to checkout -->
+            <input type="hidden" name="event_id" value="{{ event.id }}">
+
+            <div class="meal-options">
+                {% for meal in event.meal_options %}
+                <label class="meal-option-card">
+                    <input type="radio" name="meal_id" value="{{ meal.id }}" required>
+                    <div class="meal-content">
+                        <span class="meal-name">{{ meal.name }}</span>
+                    </div>
+                </label>
+                {% else %}
+                <p>No meal options available. Please contact support.</p>
+                {% endfor %}
+            </div>
+
+            {% if current_user.is_authenticated %}
+            <div class="sticky-cta">
+                <button type="submit" class="btn-primary btn-large">Proceed to Checkout</button>
+            </div>
+            {% else %}
+            <div class="sticky-cta">
+                <a href="{{ url_for('auth.login', next=request.path) }}" class="btn-primary btn-large">Login to Book</a>
+            </div>
+            {% endif %}
+        </form>
+        {% else %}
+        <div class="alert warning">
+            This event has been cancelled or is no longer accepting bookings.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

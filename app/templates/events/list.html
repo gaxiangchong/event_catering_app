@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="events-wrapper">
+    <div class="hero-section">
+        <h1>Upcoming Events</h1>
+        <p>Discover and book your next catering experience.</p>
+    </div>
+
+    <div class="events-grid">
+        {% for event in events %}
+        <a href="{{ url_for('events.get_event', event_id=event.id) }}" class="event-card-link">
+            <div class="event-card public compact">
+                <div class="card-content">
+                    <h3>{{ event.title }}</h3>
+                    <p class="date">{{ event.date.strftime('%B %d, %Y • %I:%M %p') }}</p>
+                    <p class="location">{{ event.location }}</p>
+                    <div class="footer">
+                        <span class="fee">RM{{ "%.2f"|format(event.fee) }}</span>
+                        <span class="btn-text">Select &rarr;</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% else %}
+        <div class="empty-state">
+            <p>No upcoming events at the moment. Check back later!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

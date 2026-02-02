@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="orders-wrapper">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2>My Orders</h2>
+        <a href="{{ url_for('events.list_events') }}" class="btn-secondary"
+            style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+            <span class="material-symbols-rounded"
+                style="font-size: 16px; margin-right: 4px; vertical-align: middle;">add</span> New Booking
+        </a>
+    </div>
+
+    <div class="orders-list">
+        {% for order in orders %}
+        <a href="{{ url_for('orders.get_order', order_id=order.id) }}" class="order-row-card">
+            <!-- Date Box -->
+            <div class="order-date-box">
+                <span class="month">{{ order.event.date.strftime('%b') }}</span>
+                <span class="day">{{ order.event.date.strftime('%d') }}</span>
+                <span class="year">{{ order.event.date.strftime('%Y') }}</span>
+            </div>
+
+            <!-- Details -->
+            <div class="order-info">
+                <h3>{{ order.event.title }}</h3>
+                <div class="meta">
+                    <span>
+                        <span class="material-symbols-rounded icon">restaurant</span>
+                        {{ order.meal_option.name }}
+                    </span>
+                    <span>
+                        <span class="material-symbols-rounded icon">schedule</span>
+                        {{ order.event.date.strftime('%I:%M %p') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Status & Price -->
+            <div class="order-status-price">
+                <span class="order-price">RM{{ "%.2f"|format(order.amount + order.admin_fee) }}</span>
+                <span class="status-badge {{ order.status.value }}">{{ order.status.value }}</span>
+            </div>
+        </a>
+        {% else %}
+        <div class="empty-state" style="text-align: center; padding: 4rem 1rem;">
+            <span class="material-symbols-rounded"
+                style="font-size: 48px; color: var(--text-muted); margin-bottom: 1rem;">receipt_long</span>
+            <p style="color: var(--text-muted);">No bookings found yet.</p>
+            <a href="{{ url_for('events.list_events') }}" class="btn-primary"
+                style="display: inline-block; width: auto; margin-top: 1rem;">Explore Events</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="receipt-wrapper">
+    <div class="back-nav">
+        <a href="{{ url_for('orders.list_orders') }}">
+            <span class="material-symbols-rounded">arrow_back</span> Back to Orders
+        </a>
+    </div>
+    <div class="receipt-header">
+        <h2>Order Receipt</h2>
+        <p class="ref">Ref: {{ order.payment_reference or 'Pending' }}</p>
+    </div>
+
+    <div class="receipt-body">
+        <div class="receipt-row">
+            <span>Status</span>
+            <span class="status-text {{ order.status.value }}">{{ order.status.value|upper }}</span>
+        </div>
+        <hr>
+
+        <h3>Event Details</h3>
+        <p><strong>{{ order.event.title }}</strong></p>
+        <p>{{ order.event.location }}</p>
+        <p>{{ order.event.date.strftime('%A, %B %d, %Y at %I:%M %p') }}</p>
+
+        <h3>Order Summary</h3>
+        <div class="receipt-row">
+            <span>Meal Option</span>
+            <span>{{ order.meal_option.name }}</span>
+        </div>
+        <div class="receipt-row total">
+            <span>Total Paid</span>
+            <span>RM{{ "%.2f"|format(order.amount + order.admin_fee) }}</span>
+        </div>
+    </div>
+
+    <div class="receipt-actions">
+        {% if order.status.value == 'pending' %}
+        <a href="{{ url_for('payment.checkout', event_id=order.event_id, meal_id=order.meal_option_id) }}"
+            class="btn-primary">Complete Payment</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

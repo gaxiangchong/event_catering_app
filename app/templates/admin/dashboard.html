@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <!-- Header -->
+    <div class="header-actions"
+        style="margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+        <div>
+            <h2>Event Management</h2>
+            <p style="color: var(--text-muted); margin: 0;">Manage your catering events and bookings.</p>
+        </div>
+        <div class="actions">
+            <a href="{{ url_for('admin.touchngo_verifications') }}" class="btn-secondary"
+                style="display: flex; gap: 0.5rem;">
+                <span class="material-symbols-rounded">verified</span> Touch n Go
+            </a>
+            <a href="{{ url_for('admin.list_orders') }}" class="btn-secondary" style="display: flex; gap: 0.5rem;">
+                <span class="material-symbols-rounded">receipt_long</span> View Orders
+            </a>
+            <a href="{{ url_for('admin.new_event') }}" class="btn-primary" style="display: flex; gap: 0.5rem;">
+                <span class="material-symbols-rounded">add</span> Create Event
+            </a>
+        </div>
+    </div>
+
+    <!-- Event List -->
+    <div class="event-list">
+        {% for event in events %}
+        <div class="admin-event-card {{ event.status.value }}">
+            <div class="admin-event-info">
+                <!-- Date Badge -->
+                <div class="admin-date-badge">
+                    <span class="day">{{ event.date.strftime('%d') }}</span>
+                    <span class="month">{{ event.date.strftime('%b') }}</span>
+                </div>
+
+                <!-- Details -->
+                <div class="admin-details">
+                    <h3>
+                        {{ event.title }}
+                        {% if event.status.value == 'cancelled' %}
+                        <span class="status-badge cancelled" style="margin-left: 0.5rem;">CANCELLED</span>
+                        {% endif %}
+                    </h3>
+                    <div class="admin-meta">
+                        <span>
+                            <span class="material-symbols-rounded">schedule</span>
+                            {{ event.date.strftime('%H:%M') }}
+                        </span>
+                        <span>
+                            <span class="material-symbols-rounded">location_on</span>
+                            {{ event.location }}
+                        </span>
+                        <span>
+                            <span class="material-symbols-rounded">payments</span>
+                            RM{{ "%.2f"|format(event.fee) }} / pax
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="admin-actions">
+                <a href="{{ url_for('admin.edit_event', event_id=event.id) }}" class="btn-icon" title="Edit Event">
+                    <span class="material-symbols-rounded">edit</span>
+                </a>
+
+                {% if event.status.value == 'active' %}
+                <form action="{{ url_for('admin.cancel_event', event_id=event.id) }}" method="post"
+                    onsubmit="return confirm('Are you sure you want to cancel this event? This cannot be undone.');"
+                    style="margin: 0;">
+                    <button type="submit" class="btn-icon danger" title="Cancel Event">
+                        <span class="material-symbols-rounded">block</span>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state"
+            style="text-align: center; padding: 4rem; background: white; border-radius: var(--radius-md); border: 1px dashed var(--border);">
+            <span class="material-symbols-rounded"
+                style="font-size: 48px; color: var(--text-muted); margin-bottom: 1rem;">event_busy</span>
+            <p style="color: var(--text-muted);">No events found.</p>
+            <a href="{{ url_for('admin.new_event') }}" class="btn-primary"
+                style="display: inline-flex; gap: 0.5rem; margin-top: 1rem;">
+                <span class="material-symbols-rounded">add</span> Create First Event
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

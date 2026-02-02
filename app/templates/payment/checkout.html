@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="checkout-wrapper">
+    <h2>Order Summary</h2>
+
+    <div class="summary-card">
+        <div class="summary-item">
+            <span class="label">Event</span>
+            <span class="value">{{ event.title }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Date</span>
+            <span class="value">{{ event.date.strftime('%B %d, %Y') }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Location</span>
+            <span class="value">{{ event.location }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Meal Option</span>
+            <span class="value highlight">{{ meal.name }}</span>
+        </div>
+        <hr>
+        <div class="summary-item">
+            <span class="label">Event Fee</span>
+            <span class="value">RM{{ "%.2f"|format(event.fee) }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Admin Fee</span>
+            <span class="value">RM{{ "%.2f"|format(event.admin_fee) }}</span>
+        </div>
+        <hr>
+        <div class="summary-item total">
+            <span class="label">Total Amount</span>
+            <span class="value">RM{{ "%.2f"|format(total_amount) }}</span>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="checkout-actions">
+        <!-- Hidden inputs to carry over selection -->
+        <input type="hidden" name="event_id" value="{{ event.id }}">
+        <input type="hidden" name="meal_id" value="{{ meal.id }}">
+
+        <h3 style="margin-top: 2rem;">Select Payment Method</h3>
+
+        <div class="payment-methods">
+            <label class="payment-method-card">
+                <input type="radio" name="payment_method" value="stripe" checked onchange="togglePaymentFields()">
+                <div class="payment-content">
+                    <span class="material-symbols-rounded">credit_card</span>
+                    <div>
+                        <strong>Stripe</strong>
+                        <p>Credit/Debit Card</p>
+                    </div>
+                </div>
+            </label>
+
+            <label class="payment-method-card">
+                <input type="radio" name="payment_method" value="touchngo" onchange="togglePaymentFields()">
+                <div class="payment-content">
+                    <span class="material-symbols-rounded">phone_android</span>
+                    <div>
+                        <strong>Touch n Go</strong>
+                        <p>Upload Payment Screenshot</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <!-- Touch n Go Upload Section -->
+        <div id="touchngo-upload" style="display: none; margin-top: 1.5rem;">
+            <div class="upload-instructions">
+                <p><strong>Instructions:</strong></p>
+                <ol>
+                    <li>Make payment via Touch n Go app</li>
+                    <li>Take a screenshot of the payment confirmation</li>
+                    <li>Upload the screenshot below</li>
+                    <li>Admin will verify and approve your payment</li>
+                </ol>
+            </div>
+
+            <div class="form-group">
+                <label for="payment_screenshot">Payment Screenshot</label>
+                <input type="file" id="payment_screenshot" name="payment_screenshot"
+                    accept="image/png,image/jpeg,image/jpg" class="file-input">
+                <small>Accepted formats: PNG, JPG, JPEG (Max 5MB)</small>
+            </div>
+        </div>
+
+        <div class="sticky-cta">
+            <button type="submit" class="btn-primary">Confirm & Pay</button>
+        </div>
+        <div class="cancel-link-container">
+            <a href="{{ url_for('events.get_event', event_id=event.id) }}" class="btn-text">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function togglePaymentFields() {
+        const touchngoUpload = document.getElementById('touchngo-upload');
+        const touchngoRadio = document.querySelector('input[value="touchngo"]');
+        const fileInput = document.getElementById('payment_screenshot');
+
+        if (touchngoRadio.checked) {
+            touchngoUpload.style.display = 'block';
+            fileInput.required = true;
+        } else {
+            touchngoUpload.style.display = 'none';
+            fileInput.required = false;
+        }
+    }
+
+    // Initialize on page load
+    togglePaymentFields();
+</script>
+{% endblock %}

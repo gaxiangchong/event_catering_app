@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="result-wrapper">
+    <div class="result-icon processing">
+        <span class="material-symbols-rounded">schedule</span>
+    </div>
+
+    <h2>Payment Processing</h2>
+    <p class="result-message">Your Touch n Go payment is being verified by our admin team.</p>
+
+    <div class="summary-card">
+        <h3>Order Details</h3>
+        <div class="summary-item">
+            <span class="label">Order ID</span>
+            <span class="value">#{{ order.id }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Event</span>
+            <span class="value">{{ order.event.title }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Meal</span>
+            <span class="value">{{ order.meal_option.name }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Total Amount</span>
+            <span class="value">RM{{ "%.2f"|format(order.amount + order.admin_fee) }}</span>
+        </div>
+
+        {% if order.payment_screenshot %}
+        <div class="summary-item" style="margin-top: 1rem;">
+            <span class="label">Uploaded Screenshot</span>
+            <div style="margin-top: 0.5rem;">
+                <img src="{{ url_for('static', filename='uploads/payment_screenshots/' + order.payment_screenshot) }}"
+                    alt="Payment Screenshot"
+                    style="max-width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="result-actions">
+        <a href="{{ url_for('orders.list_orders') }}" class="btn-primary">View My Orders</a>
+        <a href="{{ url_for('events.list_events') }}" class="btn-secondary">Back to Events</a>
+    </div>
+</div>
+{% endblock %}

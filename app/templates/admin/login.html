@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrapper admin-login">
+    <h2>Admin Access</h2>
+    <p>Restricted Area</p>
+
+    <form method="post" class="auth-form">
+        <div class="form-group">
+            <label for="telephone">Admin Telephone</label>
+            <input type="tel" id="telephone" name="telephone" required placeholder="0123456789">
+        </div>
+
+        <button type="submit" class="btn-primary" style="background-color: #be123c;">Login as Admin</button>
+    </form>
+</div>
+{% endblock %}

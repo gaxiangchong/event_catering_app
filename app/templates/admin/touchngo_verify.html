@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="back-nav">
+        <a href="{{ url_for('admin.dashboard') }}">
+            <span class="material-symbols-rounded">arrow_back</span> Back to Dashboard
+        </a>
+    </div>
+
+    <h2>Touch n Go Payment Verification</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">Review and approve Touch n Go payment screenshots</p>
+
+    {% if orders %}
+    <div class="verification-grid">
+        {% for order in orders %}
+        <div class="verification-card">
+            <div class="verification-header">
+                <div>
+                    <h3>Order #{{ order.id }}</h3>
+                    <p class="order-date">{{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                </div>
+                <span class="status-badge processing">PROCESSING</span>
+            </div>
+
+            <div class="verification-body">
+                <div class="order-details">
+                    <div class="detail-row">
+                        <span class="label">Customer:</span>
+                        <span class="value">{{ order.user.name }} ({{ order.user.telephone }})</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Event:</span>
+                        <span class="value">{{ order.event.title }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Meal:</span>
+                        <span class="value">{{ order.meal_option.name }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Amount:</span>
+                        <span class="value"><strong>RM{{ "%.2f"|format(order.amount + order.admin_fee)
+                                }}</strong></span>
+                    </div>
+                </div>
+
+                {% if order.payment_screenshot %}
+                <div class="screenshot-section">
+                    <p class="label">Payment Screenshot:</p>
+                    <div class="screenshot-container">
+                        <img src="{{ url_for('static', filename='uploads/payment_screenshots/' + order.payment_screenshot) }}"
+                            alt="Payment Screenshot" class="payment-screenshot" onclick="openLightbox(this.src)">
+                        <p class="screenshot-hint">Click to enlarge</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="verification-actions">
+                <form method="post" action="{{ url_for('admin.verify_touchngo', order_id=order.id) }}"
+                    style="display: inline;">
+                    <input type="hidden" name="action" value="approve">
+                    <button type="submit" class="btn-success">
+                        <span class="material-symbols-rounded">check_circle</span> Approve
+                    </button>
+                </form>
+                <form method="post" action="{{ url_for('admin.verify_touchngo', order_id=order.id) }}"
+                    style="display: inline;">
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit" class="btn-danger">
+                        <span class="material-symbols-rounded">cancel</span> Reject
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state" style="text-align: center; padding: 4rem 1rem;">
+        <span class="material-symbols-rounded"
+            style="font-size: 48px; color: var(--text-muted); margin-bottom: 1rem;">verified</span>
+        <p style="color: var(--text-muted);">No pending Touch n Go payments to verify.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img class="lightbox-content" id="lightbox-img">
+</div>
+
+<script>
+    function openLightbox(src) {
+        document.getElementById('lightbox').style.display = 'flex';
+        document.getElementById('lightbox-img').src = src;
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+</script>
+{% endblock %}

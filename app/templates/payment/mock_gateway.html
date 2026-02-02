@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fiuu-wrapper">
+    <div class="fiuu-header">
+        <h3>Fiuu Payment Gateway (Mock)</h3>
+        <p>Merchant: CateringApp</p>
+        <p class="amount">Amount: ${{ order.amount }}</p>
+    </div>
+
+    <form method="post" class="fiuu-actions">
+        <p>This is a simulated payment page. Choose an outcome:</p>
+
+        <button type="submit" name="action" value="success" class="btn-success">Simulate Successful Payment</button>
+        <button type="submit" name="action" value="fail" class="btn-danger">Simulate Payment Failure</button>
+    </form>
+</div>
+{% endblock %}
