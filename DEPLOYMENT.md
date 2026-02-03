@@ -44,6 +44,8 @@ In the **Web** tab, scroll down to **Static files** and add:
 ## 7. Reload
 Click the big green **Reload** button at the top of the Web tab.
 
+> **Note on Database**: Your database file is located at `instance/app.db`. When deploying, ensure the `instance` folder is included or created on PythonAnywhere.
+
 ---
 
 ## 🔍 Verification & Console "Check-in"

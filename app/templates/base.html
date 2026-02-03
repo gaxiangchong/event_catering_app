@@ -5,13 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Catering App</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
     <nav class="navbar">
-        <div class="nav-brand">CateringApp</div>
+        <div class="nav-brand">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="nav-logo">
+            <span>CateringApp</span>
+        </div>
         <div class="nav-links">
             {% if current_user.is_authenticated %}
             <a href="{{ url_for('events.list_events') }}" class="nav-icon-link" data-tooltip="Events">
