@@ -92,6 +92,17 @@
             </div>
 
             <div class="form-group">
+                <label for="transfer_phone_display">Payment Info</label>
+                <div class="copy-field">
+                    <input type="text" id="transfer_phone_display" value="{{ transfer_phone or '' }}" readonly>
+                    <button type="button" class="copy-btn" onclick="copyTransferPhone()" aria-label="Copy transfer phone">
+                        <span class="material-symbols-rounded">content_copy</span>
+                    </button>
+                </div>
+                <small>Tap the copy icon to paste into Touch 'n Go.</small>
+            </div>
+
+            <div class="form-group">
                 <label for="payment_screenshot">Payment Screenshot</label>
                 <input type="file" id="payment_screenshot" name="payment_screenshot"
                     accept="image/png,image/jpeg,image/jpg" class="file-input">
@@ -141,5 +152,17 @@
 
     // Initialize on page load
     togglePaymentFields();
+
+    function copyTransferPhone() {
+        const input = document.getElementById('transfer_phone_display');
+        if (!input) return;
+        input.select();
+        input.setSelectionRange(0, 99999);
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(input.value || '');
+        } else {
+            document.execCommand('copy');
+        }
+    }
 </script>
 {% endblock %}

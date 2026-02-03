@@ -23,6 +23,18 @@
         </div>
     </div>
 
+    <div class="summary-card" style="margin-bottom: 2rem;">
+        <h3 style="margin-top: 0;">Transfer Settings</h3>
+        <form method="post" action="{{ url_for('admin.update_transfer_phone') }}">
+            <div class="form-group">
+                <label for="transfer_phone">Touch 'n Go Transfer Phone</label>
+                <input type="text" id="transfer_phone" name="transfer_phone" value="{{ settings.transfer_phone or '' }}"
+                    placeholder="60123456789 / 6587654321">
+            </div>
+            <button type="submit" class="btn-secondary">Save</button>
+        </form>
+    </div>
+
     <!-- Event List -->
     <div class="event-list">
         {% for event in events %}

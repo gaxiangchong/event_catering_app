@@ -595,6 +595,26 @@ select:focus {
     letter-spacing: 0.05em;
 }
 
+.status-badge.paid {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.failed {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-text.paid {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.status-text.failed {
+    color: #dc2626;
+    font-weight: 700;
+}
+
 /* --- Sticky CTA Mobile --- */
 .sticky-cta {
     position: fixed;
@@ -634,6 +654,34 @@ select:focus {
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
+}
+
+.copy-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.copy-field input {
+    flex: 1;
+}
+
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.copy-btn:hover {
+    background: var(--bg);
+    color: var(--primary);
 }
 
 @media (min-width: 600px) {

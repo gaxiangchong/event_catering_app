@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, abort, current_app
 from flask_login import login_required, current_user
 from app import db
-from app.models import Event, MealOption, Order, OrderStatus
+from app.models import Event, MealOption, Order, OrderStatus, SiteSetting
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import uuid
@@ -45,6 +45,8 @@ def checkout():
         base_amount = event.fee * meal_count
         stripe_fee = round((base_amount * 0.03) + 1.0, 2)
         stripe_total = base_amount + stripe_fee
+        settings = SiteSetting.query.first()
+        transfer_phone = settings.transfer_phone if settings else ''
 
         return render_template(
             'payment/checkout.html',
@@ -53,7 +55,8 @@ def checkout():
             meal_count=meal_count,
             base_amount=base_amount,
             stripe_fee=stripe_fee,
-            stripe_total=stripe_total
+            stripe_total=stripe_total,
+            transfer_phone=transfer_phone
         )
 
     elif request.method == 'POST':

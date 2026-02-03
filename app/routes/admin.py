@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
-from app.models import User, Event, EventStatus, MealOption, Order, OrderStatus
+from app.models import User, Event, EventStatus, MealOption, Order, OrderStatus, SiteSetting
 import csv
 from io import StringIO, BytesIO
 from flask import Response, stream_with_context, send_file
@@ -49,7 +49,26 @@ def logout():
 @admin_required
 def dashboard():
     events = Event.query.order_by(Event.date.desc()).all()
-    return render_template('admin/dashboard.html', events=events)
+    settings = SiteSetting.query.first()
+    if not settings:
+        settings = SiteSetting(transfer_phone='')
+        db.session.add(settings)
+        db.session.commit()
+    return render_template('admin/dashboard.html', events=events, settings=settings)
+
+@bp.route('/settings/transfer-phone', methods=['POST'])
+@admin_required
+def update_transfer_phone():
+    transfer_phone = (request.form.get('transfer_phone') or '').strip()
+    settings = SiteSetting.query.first()
+    if not settings:
+        settings = SiteSetting(transfer_phone=transfer_phone)
+        db.session.add(settings)
+    else:
+        settings.transfer_phone = transfer_phone
+    db.session.commit()
+    flash('Transfer phone updated.', 'success')
+    return redirect(url_for('admin.dashboard'))
 
 @bp.route('/events/new', methods=['GET', 'POST'])
 @admin_required

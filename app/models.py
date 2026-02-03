@@ -54,6 +54,13 @@ class MealOption(db.Model):
     def __repr__(self):
         return f'<MealOption {self.name}>'
 
+class SiteSetting(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    transfer_phone = db.Column(db.String(30), nullable=False, default='')
+
+    def __repr__(self):
+        return '<SiteSetting>'
+
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
