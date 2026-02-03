@@ -46,6 +46,13 @@
         </div>
 
         <div class="form-group">
+            <label for="meal_required">Meals Required (Qty)</label>
+            <input type="number" id="meal_required" name="meal_required" min="1"
+                value="{{ event.meal_required if event else '1' }}" required>
+            <small>Total price is calculated at checkout using this quantity.</small>
+        </div>
+
+        <div class="form-group">
             <label for="capacity">Capacity (Optional)</label>
             <input type="number" id="capacity" name="capacity" value="{{ event.capacity if event else '' }}">
         </div>

@@ -496,7 +496,7 @@ select:focus {
 }
 
 .meal-description-textbox {
-    width: 100%;
+    width: 93%;
     max-width: 100%;
     padding: 1rem;
     font-size: 0.95rem;
@@ -507,7 +507,7 @@ select:focus {
     background: var(--bg);
     color: var(--text);
     resize: vertical;
-    min-height: 100px;
+    min-height: 240px;
 }
 
 .meal-description-textbox:focus {

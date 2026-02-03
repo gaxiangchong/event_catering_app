@@ -34,6 +34,7 @@ class Event(db.Model):
     location = db.Column(db.String(200))
     fee = db.Column(db.Float, nullable=False)
     admin_fee = db.Column(db.Float, default=1.0)
+    meal_required = db.Column(db.Integer, nullable=False, default=1)
     capacity = db.Column(db.Integer)
     status = db.Column(db.Enum(EventStatus), default=EventStatus.ACTIVE)
     image_url = db.Column(db.String(300))

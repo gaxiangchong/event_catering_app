@@ -61,6 +61,7 @@ def new_event():
         location = request.form.get('location')
         fee = request.form.get('fee')
         admin_fee = request.form.get('admin_fee', '1.0')
+        meal_required = request.form.get('meal_required', '1')
         capacity = request.form.get('capacity')
         
         try:
@@ -72,6 +73,7 @@ def new_event():
                 location=location,
                 fee=float(fee),
                 admin_fee=float(admin_fee),
+                meal_required=int(meal_required),
                 capacity=int(capacity) if capacity else None,
                 status=EventStatus.ACTIVE
             )
@@ -107,6 +109,7 @@ def edit_event(event_id):
         event.location = request.form.get('location')
         event.fee = float(request.form.get('fee'))
         event.admin_fee = float(request.form.get('admin_fee', '1.0'))
+        event.meal_required = int(request.form.get('meal_required', '1'))
         event.capacity = int(request.form.get('capacity')) if request.form.get('capacity') else None
 
         meal_0_name = request.form.get('meal_0_name') or 'Standard'

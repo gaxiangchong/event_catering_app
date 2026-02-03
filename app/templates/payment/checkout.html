@@ -27,14 +27,25 @@
             <span class="value">RM{{ "%.2f"|format(event.fee) }}</span>
         </div>
         <div class="summary-item">
-            <span class="label">Admin Fee</span>
-            <span class="value">RM{{ "%.2f"|format(event.admin_fee) }}</span>
+            <span class="label">Meals Required</span>
+            <span class="value">{{ meal_count }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Meal Subtotal</span>
+            <span class="value">RM{{ "%.2f"|format(base_amount) }}</span>
+        </div>
+        <div class="summary-item" id="stripe-fee-row">
+            <span class="label">Stripe Fee (3% + RM1)</span>
+            <span class="value">RM<span id="stripe-fee-value">{{ "%.2f"|format(stripe_fee) }}</span></span>
         </div>
         <hr>
         <div class="summary-item total">
-            <span class="label">Total Amount</span>
-            <span class="value">RM{{ "%.2f"|format(total_amount) }}</span>
+            <span class="label" id="total-label">Estimated Total (Stripe)</span>
+            <span class="value">RM<span id="total-value">{{ "%.2f"|format(stripe_total) }}</span></span>
         </div>
+        <p id="summary-note" style="margin-top: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">
+            Stripe fee applies only to Stripe payments. Touch 'n Go has no admin fee.
+        </p>
     </div>
 
     <form method="post" enctype="multipart/form-data" class="checkout-actions">
@@ -61,7 +72,7 @@
                 <div class="payment-content">
                     <span class="material-symbols-rounded">phone_android</span>
                     <div>
-                        <strong>Touch n Go</strong>
+                        <strong>Touch 'n Go</strong>
                         <p>Upload Payment Screenshot</p>
                     </div>
                 </div>
@@ -73,7 +84,7 @@
             <div class="upload-instructions">
                 <p><strong>Instructions:</strong></p>
                 <ol>
-                    <li>Make payment via Touch n Go app</li>
+                    <li>Make payment via Touch 'n Go app</li>
                     <li>Take a screenshot of the payment confirmation</li>
                     <li>Upload the screenshot below</li>
                     <li>Admin will verify and approve your payment</li>
@@ -102,13 +113,29 @@
         const touchngoUpload = document.getElementById('touchngo-upload');
         const touchngoRadio = document.querySelector('input[value="touchngo"]');
         const fileInput = document.getElementById('payment_screenshot');
+        const stripeFeeRow = document.getElementById('stripe-fee-row');
+        const totalLabel = document.getElementById('total-label');
+        const totalValue = document.getElementById('total-value');
+        const summaryNote = document.getElementById('summary-note');
+
+        const baseAmount = Number('{{ "%.2f"|format(base_amount) }}');
+        const stripeFee = Number('{{ "%.2f"|format(stripe_fee) }}');
+        const stripeTotal = Number('{{ "%.2f"|format(stripe_total) }}');
 
         if (touchngoRadio.checked) {
             touchngoUpload.style.display = 'block';
             fileInput.required = true;
+            stripeFeeRow.style.display = 'none';
+            totalLabel.textContent = 'Total Amount';
+            totalValue.textContent = baseAmount.toFixed(2);
+            summaryNote.textContent = "Touch 'n Go has no admin fee.";
         } else {
             touchngoUpload.style.display = 'none';
             fileInput.required = false;
+            stripeFeeRow.style.display = '';
+            totalLabel.textContent = 'Estimated Total (Stripe)';
+            totalValue.textContent = stripeTotal.toFixed(2);
+            summaryNote.textContent = "Stripe fee applies only to Stripe payments. Touch 'n Go has no admin fee.";
         }
     }
 

@@ -32,6 +32,10 @@
             <strong>Meal fee</strong>
             <span class="price">RM{{ "%.2f"|format(event.fee) }}</span>
         </div>
+        <div class="meta-item">
+            <strong>Meals required</strong>
+            <span>{{ event.meal_required or 1 }}</span>
+        </div>
     </div>
 
     <div class="event-description">
@@ -60,8 +64,8 @@
                 <p>No meal options available. Please contact support.</p>
                 {% endfor %}
                 <div class="meal-description-box-wrapper">
-                    <label for="menu-description-text" class="meal-description-label">Dishes included</label>
-                    <textarea id="menu-description-text" class="meal-description-textbox" readonly rows="5" placeholder="Select a meal above to see the dishes included."></textarea>
+                    <label for="menu-description-text" class="meal-description-label">Meal Description</label>
+                    <textarea id="menu-description-text" class="meal-description-textbox" readonly rows="7" placeholder="Select a meal above to see the meal description."></textarea>
                 </div>
                 <script>
                 (function() {
@@ -77,7 +81,7 @@
                         }
                         var desc = id ? (mealDescriptions[id] || '') : '';
                         textEl.value = desc;
-                        textEl.placeholder = desc ? '' : 'Select a meal above to see the dishes included.';
+                        textEl.placeholder = desc ? '' : 'Select a meal above to see the meal description.';
                     }
                     radios.forEach(function(r) { r.addEventListener('change', updateDescription); });
                     updateDescription();

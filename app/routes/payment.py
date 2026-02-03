@@ -40,10 +40,21 @@ def checkout():
             flash('You have already booked this event!', 'warning')
             return redirect(url_for('events.list_events'))
         
-        # Calculate total amount
-        total_amount = event.fee + event.admin_fee
+        # Calculate base amount (admin fee applies only to Stripe)
+        meal_count = event.meal_required or 1
+        base_amount = event.fee * meal_count
+        stripe_fee = round((base_amount * 0.03) + 1.0, 2)
+        stripe_total = base_amount + stripe_fee
 
-        return render_template('payment/checkout.html', event=event, meal=meal, total_amount=total_amount)
+        return render_template(
+            'payment/checkout.html',
+            event=event,
+            meal=meal,
+            meal_count=meal_count,
+            base_amount=base_amount,
+            stripe_fee=stripe_fee,
+            stripe_total=stripe_total
+        )
 
     elif request.method == 'POST':
         event_id = request.form.get('event_id')
@@ -68,8 +79,11 @@ def checkout():
             flash('You have already booked this event!', 'warning')
             return redirect(url_for('events.list_events'))
         
-        # Calculate total amount
-        total_amount = event.fee + event.admin_fee
+        # Calculate base amount and Stripe fee (if applicable)
+        meal_count = event.meal_required or 1
+        base_amount = event.fee * meal_count
+        stripe_fee = round((base_amount * 0.03) + 1.0, 2)
+        admin_fee = stripe_fee if payment_method == 'stripe' else 0.0
 
         if payment_method == 'stripe':
             return redirect(url_for('payment.stripe_payment', 
@@ -93,8 +107,8 @@ def checkout():
                     user_id=current_user.id,
                     event_id=event.id,
                     meal_option_id=meal.id,
-                    amount=event.fee,
-                    admin_fee=event.admin_fee,
+                    amount=base_amount,
+                    admin_fee=admin_fee,
                     status=OrderStatus.PROCESSING,
                     payment_method='touchngo'
                 )
@@ -137,12 +151,15 @@ def stripe_payment(event_id, meal_id):
         abort(400)
     
     # Create pending order
+    meal_count = event.meal_required or 1
+    base_amount = event.fee * meal_count
+    stripe_fee = round((base_amount * 0.03) + 1.0, 2)
     order = Order(
         user_id=current_user.id,
         event_id=event.id,
         meal_option_id=meal.id,
-        amount=event.fee,
-        admin_fee=event.admin_fee,
+        amount=base_amount,
+        admin_fee=stripe_fee,
         status=OrderStatus.PENDING,
         payment_method='stripe',
         payment_reference=str(uuid.uuid4())
@@ -164,12 +181,12 @@ def stripe_payment(event_id, meal_id):
                             'description': f'Event on {event.date.strftime("%B %d, %Y")}',
                         },
                     },
-                    'quantity': 1,
+                    'quantity': meal_count,
                 },
                 {
                     'price_data': {
                         'currency': current_app.config['STRIPE_CURRENCY'],
-                        'unit_amount': int(event.admin_fee * 100),  # Convert to cents
+                        'unit_amount': int(round(stripe_fee * 100)),  # Convert to cents
                         'product_data': {
                             'name': 'Admin Fee',
                         },
