@@ -418,6 +418,11 @@ select:focus {
     padding-top: 1rem;
 }
 
+.card-footer-center {
+    justify-content: center;
+    text-align: center;
+}
+
 .card-content .fee {
     font-size: 1.25rem;
     font-weight: 700;
@@ -829,6 +834,10 @@ select:focus {
     text-align: right;
 }
 
+.orders-header h2 {
+    margin-bottom: 0;
+}
+
 .order-price {
     font-size: 1.25rem;
     font-weight: 700;
@@ -864,6 +873,11 @@ select:focus {
 
     .nav-links {
         gap: 0.25rem;
+    }
+
+    .orders-new-booking {
+        width: 60%;
+        max-width: 60%;
     }
 }
 

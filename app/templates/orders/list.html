@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="orders-wrapper">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div class="orders-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h2>My Orders</h2>
-        <a href="{{ url_for('events.list_events') }}" class="btn-secondary"
+        <a href="{{ url_for('events.list_events') }}" class="btn-secondary orders-new-booking"
             style="padding: 0.5rem 1rem; font-size: 0.8rem;">
             <span class="material-symbols-rounded"
                 style="font-size: 16px; margin-right: 4px; vertical-align: middle;">add</span> New Booking
