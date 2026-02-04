@@ -656,6 +656,15 @@ select:focus {
     align-items: center;
 }
 
+.phone-input-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.country-code-input {
+    max-width: 90px;
+}
+
 .copy-field {
     display: flex;
     align-items: center;

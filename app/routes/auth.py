@@ -11,14 +11,19 @@ def login():
         return redirect(url_for('events.list_events')) # Redirect to main page
 
     if request.method == 'POST':
-        telephone = request.form.get('telephone')
+        country_code = (request.form.get('country_code') or '').strip()
+        telephone = (request.form.get('telephone') or '').strip()
         name = request.form.get('name')
 
-        if not telephone or not name:
-            flash('Name and Telephone are required.')
+        if not telephone or not name or not country_code:
+            flash('Name, Country Code, and Telephone are required.')
             return redirect(url_for('auth.login'))
 
-        user = User.query.filter_by(telephone=telephone).first()
+        if country_code.startswith('+'):
+            country_code = country_code[1:]
+        full_telephone = f"{country_code}{telephone}"
+
+        user = User.query.filter_by(telephone=full_telephone).first()
         
         if user:
             # Existing user
@@ -27,7 +32,7 @@ def login():
             login_user(user)
         else:
             # Create new user
-            user = User(name=name, telephone=telephone)
+            user = User(name=name, telephone=full_telephone)
             db.session.add(user)
             db.session.commit()
             login_user(user)

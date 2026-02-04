@@ -16,7 +16,10 @@
 
         <div class="form-group">
             <label for="telephone">Telephone</label>
-            <input type="tel" id="telephone" name="telephone" required placeholder="60123456789 / 6587654321">
+            <div class="phone-input-group">
+                <input type="tel" id="country_code" name="country_code" class="country-code-input" required placeholder="60">
+                <input type="tel" id="telephone" name="telephone" required placeholder="11345391">
+            </div>
         </div>
 
         <button type="submit" class="btn-primary">Login / Sign Up</button>

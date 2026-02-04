@@ -92,14 +92,12 @@
             </div>
 
             <div class="form-group">
-                <label for="transfer_phone_display">Payment Info</label>
-                <div class="copy-field">
-                    <input type="text" id="transfer_phone_display" value="{{ transfer_phone or '' }}" readonly>
-                    <button type="button" class="copy-btn" onclick="copyTransferPhone()" aria-label="Copy transfer phone">
-                        <span class="material-symbols-rounded">content_copy</span>
-                    </button>
-                </div>
-                <small>Tap the copy icon to paste into Touch 'n Go.</small>
+                <label>Touch 'n Go QR</label>
+                <a href="{{ url_for('static', filename='QR_Payment.JPG') }}" download class="btn-secondary"
+                    style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                    <span class="material-symbols-rounded">download</span>Download QR Payment
+                </a>
+                <!-- <small><br>Download the QR to use for payment transfer.</small> -->
             </div>
 
             <div class="form-group">
@@ -153,16 +151,5 @@
     // Initialize on page load
     togglePaymentFields();
 
-    function copyTransferPhone() {
-        const input = document.getElementById('transfer_phone_display');
-        if (!input) return;
-        input.select();
-        input.setSelectionRange(0, 99999);
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(input.value || '');
-        } else {
-            document.execCommand('copy');
-        }
-    }
 </script>
 {% endblock %}
